@@ -1,0 +1,85 @@
+apiVersion: tekton.dev/v1alpha1
+kind: Pipeline
+metadata:
+  labels:
+{{ include "springboot-tekton.labels" . | nindent 4 }}
+  name: {{ include "springboot-tekton.fullname" . }}-pipeline
+spec:
+  workspaces:
+  - name: local-maven-repo
+  resources:
+  - name: {{ include "springboot-tekton.fullname" . }}-git
+    type: git
+  - name: {{ include "springboot-tekton.fullname" . }}-templates
+    type: git
+  tasks:
+  - name: maven-build-binary-build
+    taskRef: 
+      name: maven-build-binary-build
+    resources:
+      inputs:
+      - name: source
+        resource: {{ include "springboot-tekton.fullname" . }}-git
+    workspaces:
+    - name: maven-repo
+      workspace: local-maven-repo
+  - name: deploy-to-dev
+    taskRef:
+      name: deploy
+    resources:
+      inputs:
+      - name: templates
+        resource: {{ include "springboot-tekton.fullname" . }}-templates
+    runAfter:
+      - maven-build-binary-build
+    params:
+    - name: fromNamespace
+      value: {{ .Values.deploy.namespace.prefix }}-build
+    - name: toNamespace
+      value: {{ .Values.deploy.namespace.prefix }}-dev
+    - name: tag
+      value: latest
+    - name: imageStream
+      value: {{ include "springboot-tekton.fullname" . }}
+    - name: deployment
+      value: {{ include "springboot-tekton.fullname" . }}
+  - name: deploy-to-stage
+    taskRef:
+      name: deploy
+    resources:
+      inputs:
+      - name: templates
+        resource: {{ include "springboot-tekton.fullname" . }}-templates
+    runAfter:
+      - deploy-to-dev
+    params:
+    - name: fromNamespace
+      value: {{ .Values.deploy.namespace.prefix }}-dev
+    - name: toNamespace
+      value: {{ .Values.deploy.namespace.prefix }}-stage  
+    - name: tag
+      value: latest 
+    - name: imageStream
+      value: {{ include "springboot-tekton.fullname" . }} 
+    - name: deployment
+      value: {{ include "springboot-tekton.fullname" . }} 
+  - name: deploy-to-prod
+    taskRef:
+      name: deploy
+    resources:
+      inputs:
+      - name: templates
+        resource: {{ include "springboot-tekton.fullname" . }}-templates
+    runAfter:
+      - deploy-to-stage
+    params:
+    - name: fromNamespace
+      value: {{ .Values.deploy.namespace.prefix }}-stage
+    - name: toNamespace
+      value: {{ .Values.deploy.namespace.prefix }}-prod  
+    - name: tag
+      value: latest 
+    - name: imageStream
+      value: {{ include "springboot-tekton.fullname" . }} 
+    - name: deployment
+      value: {{ include "springboot-tekton.fullname" . }}

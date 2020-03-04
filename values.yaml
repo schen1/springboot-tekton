@@ -1,0 +1,47 @@
+# Default values for springboot-tekton.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+image:
+  repository: basic-spring
+  pullPolicy: IfNotPresent
+
+imagePullSecrets: []
+nameOverride: "basic-spring-boot"
+fullnameOverride: "basic-spring-boot"
+
+## This serviceaccount is created by the OpenShift pipeline operator
+serviceAccount:
+  name: pipeline
+
+imagestream:
+  name: redhat-openjdk18-openshift:1.5
+  namespace: openshift
+
+deploy:
+  namespace:
+    prefix: basic-spring-boot
+
+git:
+  source:
+    repository: https://github.com/redhat-cop/spring-rest.git
+    revision: master
+  templates:
+    repository: https://github.com/schen1/container-pipelines.git
+    revision: feature/tekton
+
+pvc:
+  enabled: true
+  size: 5Gi
+
+maven:
+  image:
+    repository: maven
+    tag: 3.6.0-jdk-8-slim
+  command: /usr/bin/mvn
+
+sonar:
+  enabled: true
+  url: http://ns3306290.ip-178-32-219.eu:9000

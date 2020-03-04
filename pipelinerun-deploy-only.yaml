@@ -1,0 +1,13 @@
+apiVersion: tekton.dev/v1alpha1
+kind: PipelineRun
+metadata:
+  generateName: basic-spring-boot-deploy-only-pipeline-
+spec:
+  pipelineRef:
+    name: basic-spring-boot-deploy-only-pipeline
+  resources:
+  - name: basic-spring-boot-templates
+    resourceRef:
+      name: basic-spring-boot-templates
+  serviceAccountName: pipeline
+  timeout: 1h0m0s

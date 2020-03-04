@@ -1,0 +1,47 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  labels:
+{{ include "springboot-tekton.labels" . | nindent 4 }}
+  name: {{ include "springboot-tekton.serviceAccountName" . }}_edit
+  namespace: {{ .Values.deploy.namespace.prefix }}-dev
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: edit
+subjects:
+- kind: ServiceAccount
+  name: {{ include "springboot-tekton.serviceAccountName" . }}
+  namespace: {{ .Release.Namespace }}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  labels:
+{{ include "springboot-tekton.labels" . | nindent 4 }}
+  name: {{ include "springboot-tekton.serviceAccountName" . }}_edit
+  namespace: {{ .Values.deploy.namespace.prefix }}-stage
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: edit
+subjects:
+- kind: ServiceAccount
+  name: {{ include "springboot-tekton.serviceAccountName" . }}
+  namespace: {{ .Release.Namespace }}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  labels:
+{{ include "springboot-tekton.labels" . | nindent 4 }}
+  name: {{ include "springboot-tekton.serviceAccountName" . }}_edit
+  namespace: {{ .Values.deploy.namespace.prefix }}-prod
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: edit
+subjects:
+- kind: ServiceAccount
+  name: {{ include "springboot-tekton.serviceAccountName" . }}
+  namespace: {{ .Release.Namespace }}

@@ -1,0 +1,20 @@
+apiVersion: tekton.dev/v1alpha1
+kind: PipelineRun
+metadata:
+  generateName: basic-spring-boot-pipeline-
+spec:
+  pipelineRef:
+    name: basic-spring-boot-pipeline
+  resources:
+  - name: basic-spring-boot-git
+    resourceRef:
+      name: basic-spring-boot-git
+  - name: basic-spring-boot-templates
+    resourceRef:
+      name: basic-spring-boot-templates
+  serviceAccountName: pipeline
+  workspaces:
+  - name: local-maven-repo
+    persistentVolumeClaim:
+      claimName: maven-repo-pvc
+  timeout: 1h0m0s

@@ -1,0 +1,58 @@
+apiVersion: tekton.dev/v1alpha1
+kind: Task
+metadata:
+  labels:
+{{ include "springboot-tekton.labels" . | nindent 4 }}
+  name: deploy
+spec:
+  inputs:
+    params:
+      - name: fromNamespace
+        description: The namespace we are tagging from
+      - name: toNamespace
+        description: The namespace we are tagging to
+      - name: tag
+        description: The image tag
+      - name: imageStream
+        description: The imageStream
+      - name: deployment
+        description: the deployment
+    resources:
+    - name: templates
+      type: git
+  steps:
+    - name: update-deployment-from-template
+      image: quay.io/openshift-pipeline/openshift-cli:latest
+      workingDir: /workspace/templates/basic-spring-boot-tekton
+      script: |
+        #!/usr/bin/env bash
+        echo "Updating namespace $(inputs.params.toNamespace)"
+        oc process \
+          -f .openshift/templates/deployment.yml \
+          -p "APPLICATION_NAME=$(inputs.params.imageStream)" \
+          -p "NAMESPACE=$(inputs.params.toNamespace)" \
+          -p READINESS_PATH="/health" \
+          -p READINESS_RESPONSE="status.:.UP" \
+          | oc apply -f -
+    - name: tag-image
+      image: quay.io/openshift-pipeline/openshift-cli:latest
+      command: ["/usr/local/bin/oc"]
+      args:
+        - tag
+        - "$(inputs.params.fromNamespace)/$(inputs.params.imageStream):$(inputs.params.tag)"
+        - "$(inputs.params.toNamespace)/$(inputs.params.imageStream):$(inputs.params.tag)"
+    - name: verify-deployment
+      image: quay.io/openshift-pipeline/openshift-cli:latest
+      script: |
+        #!/bin/bash
+        readyReplicas=0
+        while [ $readyReplicas -lt 1 ]
+        do
+          readyReplicas=$(oc get dc {{ include "springboot-tekton.fullname" . }} -o jsonpath='{.status.readyReplicas}' -n "$(inputs.params.toNamespace)")
+          if [ $readyReplicas -lt 1 ]; then
+            echo "$readyReplicas replica are ready, retrying in 1 second"
+            sleep 1
+          fi
+        done
+        echo "$readyReplicas replica are ready for dc {{ include "springboot-tekton.fullname" . }} in namespace $(inputs.params.toNamespace)"
+        exit 0

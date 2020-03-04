@@ -1,0 +1,14 @@
+{{- if .Values.pvc.enabled }}
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: maven-repo-pvc
+  namespace: {{ include "springboot-tekton.fullname" . }}-build
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+  volumeMode: Filesystem
+{{- end }}

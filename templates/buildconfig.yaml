@@ -1,0 +1,22 @@
+apiVersion: build.openshift.io/v1
+kind: BuildConfig
+metadata:
+  labels:
+{{ include "springboot-tekton.labels" . | nindent 4 }}
+  name: {{ include "springboot-tekton.fullname" . }}
+spec:
+  output:
+    to:
+      kind: ImageStreamTag
+      name: {{ include "springboot-tekton.fullname" . }}:latest
+  source:
+    binary: {}
+    type: Binary
+  strategy:
+    sourceStrategy:
+      from:
+        kind: ImageStreamTag
+        name: {{ .Values.imagestream.name }}
+        namespace: {{ .Values.imagestream.namespace }}
+    type: Source
+  triggers: []
