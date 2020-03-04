@@ -1,0 +1,14 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: spring-boot-tekton
+  namespace: argocd
+spec:
+  destination:
+    namespace: basic-spring-boot-build
+    server: 'https://kubernetes.default.svc'
+  project: default
+  source:
+    path: .
+    repoURL: 'http://ns3306290.ip-178-32-219.eu:3000/schen/springboot-tekton.git'
+    targetRevision: master
