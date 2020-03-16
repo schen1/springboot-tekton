@@ -3,7 +3,6 @@
 ## Install the pipelines using helm
 
 ```
-cd $HOME/Documents/openshift4/springboot-tekton
 oc create -f https://raw.githubusercontent.com/schen1/container-pipelines/feature/tekton/basic-spring-boot-tekton/.openshift/projects/projects.yml
 helm upgrade --install springboot-pipelines . -n basic-spring-boot-build
 ```
