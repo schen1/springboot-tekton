@@ -1,10 +1,15 @@
 # springboot-tekton
 
+
+## Setup projects and rolebindings
+```
+$ oc create -f https://raw.githubusercontent.com/schen1/container-pipelines/feature/tekton/basic-spring-boot-tekton/.openshift/projects/projects.yml
+```
+
 ## Install the pipelines using helm
 
 ```
-oc create -f https://raw.githubusercontent.com/schen1/container-pipelines/feature/tekton/basic-spring-boot-tekton/.openshift/projects/projects.yml
-helm upgrade --install springboot-pipelines . -n basic-spring-boot-build
+$ helm upgrade --install springboot-pipelines . -n basic-spring-boot-build
 ```
 
 ## Run the pipeline
@@ -15,8 +20,6 @@ $ oc create -f pipelinerun.yaml -n basic-spring-boot-build
 
 ## Support
 Add PVC for [maven caching](https://developers.redhat.com/blog/2020/02/26/speed-up-maven-builds-in-tekton-pipelines/)
-
-
 
 ## Known issues
 [Add workspace when starting a pipeline #651](https://github.com/tektoncd/cli/issues/651)
