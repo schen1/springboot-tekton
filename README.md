@@ -29,6 +29,10 @@ $ oc delete project basic-spring-boot-build basic-spring-boot-dev basic-spring-b
 
 ## References
 https://github.com/redhat-cop/container-pipelines/tree/master/basic-spring-boot-tekton
+
 https://developers.redhat.com/blog/2020/02/26/speed-up-maven-builds-in-tekton-pipelines/
+
 https://github.com/tektoncd/catalog
+
 https://docs.google.com/presentation/d/1nIrbVlVbk-cxWR7njrqkSahqK_wXKNnEGPXP2eKRrVk/edit#slide=id.g432884ce64_4_1420
+
