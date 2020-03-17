@@ -43,16 +43,10 @@ spec:
         - "$(inputs.params.toNamespace)/$(inputs.params.imageStream):$(inputs.params.tag)"
     - name: verify-deployment
       image: quay.io/openshift-pipeline/openshift-cli:latest
-      script: |
-        #!/bin/bash
-        readyReplicas=0
-        while [ $readyReplicas -lt 1 ]
-        do
-          readyReplicas=$(oc get dc {{ include "springboot-tekton.fullname" . }} -o jsonpath='{.status.readyReplicas}' -n "$(inputs.params.toNamespace)")
-          if [ $readyReplicas -lt 1 ]; then
-            echo "$readyReplicas replica are ready, retrying in 1 second"
-            sleep 1
-          fi
-        done
-        echo "$readyReplicas replica are ready for dc {{ include "springboot-tekton.fullname" . }} in namespace $(inputs.params.toNamespace)"
-        exit 0
+      command: ["/usr/local/bin/oc"]
+      args:
+        - rollout
+        - status
+        - "dc/$(inputs.params.deployment)"
+        - -n
+        - "$(inputs.params.toNamespace)"
