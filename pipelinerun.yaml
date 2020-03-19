@@ -12,9 +12,12 @@ spec:
   - name: basic-spring-boot-templates
     resourceRef:
       name: basic-spring-boot-templates
+  - name: basic-spring-boot-image
+    resourceRef:
+      name: basic-spring-boot-image
   serviceAccountName: pipeline
   workspaces:
   - name: local-maven-repo
     persistentVolumeClaim:
-      claimName: maven-repo-pvc
+      claimName: maven-repo-pvc-2
   timeout: 1h0m0s

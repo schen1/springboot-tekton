@@ -26,7 +26,7 @@ deploy:
 
 git:
   source:
-    repository: https://github.com/redhat-cop/spring-rest.git
+    repository: https://github.com/schen1/spring-rest.git
     revision: master
   templates:
     repository: https://github.com/schen1/container-pipelines.git
@@ -43,5 +43,5 @@ maven:
   command: /usr/bin/mvn
 
 sonar:
-  enabled: true
+  enabled: false
   url: http://ns3306290.ip-178-32-219.eu:9000

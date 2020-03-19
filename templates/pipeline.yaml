@@ -20,6 +20,9 @@ spec:
       inputs:
       - name: source
         resource: {{ include "springboot-tekton.fullname" . }}-git
+      outputs:
+      - name: image
+        resource: {{ include "springboot-tekton.fullname" . }}-image
     workspaces:
     - name: maven-repo
       workspace: local-maven-repo
