@@ -16,12 +16,11 @@ data:
     -f2- -d=)
 
     curl -sf -H \"Accept: application/json\" --connect-timeout  5 -m 15
-    ${ceTaskUrl} > sonar-results.json
+    ${ceTaskUrl} > /tmp/sonar-results.json
 
+    ceTaskStatus=$(cat /tmp/sonar-results.json | jq -r .[].status)
 
-    ceTaskStatus=$(cat sonar-results.json | jq -r .[].status)
-
-    analysisId=$(cat sonar-results.json | jq -r .[].analysisId)
+    analysisId=$(cat /tmp/sonar-results.json | jq -r .[].analysisId)
 
     while [ ${ceTaskStatus} == "PENDING" ] || [ ${ceTaskStatus} == "IN_PROGRESS"
     ]
@@ -29,9 +28,9 @@ data:
     do
         echo "Status is ${ceTaskStatus}, Trying again in 1 seconds"
         sleep 1
-        curl -sf -H \"Accept: application/json\" --connect-timeout  5 -m 15 ${ceTaskUrl} > sonar-results.json
-        ceTaskStatus=$(cat sonar-results.json | jq -r .[].status)
-        analysisId=$(cat sonar-results.json | jq -r .[].analysisId)
+        curl -sf -H \"Accept: application/json\" --connect-timeout  5 -m 15 ${ceTaskUrl} > /tmp/sonar-results.json
+        ceTaskStatus=$(cat /tmp/sonar-results.json | jq -r .[].status)
+        analysisId=$(cat /tmp/sonar-results.json | jq -r .[].analysisId)
     done
 
 
@@ -47,9 +46,9 @@ data:
     analysisUrl="${sonarUrl}/api/qualitygates/project_status?analysisId=${analysisId}"
 
     curl -sf -H \"Accept: application/json\" --connect-timeout  5 -m 15
-    ${analysisUrl} > sonar-analysis-results.json
+    ${analysisUrl} > /tmp/sonar-analysis-results.json
 
-    projectStatus=$(cat sonar-analysis-results.json | jq -r
+    projectStatus=$(cat /tmp/sonar-analysis-results.json | jq -r
     .projectStatus.status)
 
 
