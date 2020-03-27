@@ -12,6 +12,8 @@ spec:
     type: git
   - name: {{ include "springboot-tekton.fullname" . }}-templates
     type: git
+  - name: {{ include "springboot-tekton.fullname" . }}-image
+    type: image
   tasks:
   - name: maven-build-binary-build
     taskRef: 

@@ -43,5 +43,5 @@ maven:
   command: /usr/bin/mvn
 
 sonar:
-  enabled: false
+  enabled: true
   url: http://ns3306290.ip-178-32-219.eu:9000
