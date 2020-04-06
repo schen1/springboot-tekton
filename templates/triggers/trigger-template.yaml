@@ -1,0 +1,38 @@
+apiVersion: tekton.dev/v1alpha1
+kind: TriggerTemplate
+metadata:
+  name: {{ include "springboot-tekton.fullname" . }}-tt
+spec:
+  params:
+  - name: git-repo-url
+    description: The git repository url
+  - name: git-revision
+    description: The git revision
+    default: master
+  - name: git-repo-name
+    description: The name of the deployment to be created / patched
+#
+  resourcetemplates:
+  - apiVersion: tekton.dev/v1alpha1
+    kind: PipelineRun
+    metadata:
+      name: $(params.git-repo-name)-pipe-run-$(uid)
+    spec:
+      pipelineRef:
+        name: {{ include "springboot-tekton.fullname" . }}-pipeline
+      resources:
+      - name: {{ include "springboot-tekton.fullname" . }}-git
+        resourceRef:
+          name: {{ include "springboot-tekton.fullname" . }}-git
+      - name: {{ include "springboot-tekton.fullname" . }}-templates
+        resourceRef:
+          name: {{ include "springboot-tekton.fullname" . }}-templates
+      - name: {{ include "springboot-tekton.fullname" . }}-image
+        resourceRef:
+          name: {{ include "springboot-tekton.fullname" . }}-image
+      serviceAccountName: {{ .Values.serviceAccount.name }}
+      workspaces:
+      - name: local-maven-repo
+        persistentVolumeClaim:
+          claimName: maven-repo-pvc-2
+      timeout: 1h0m0s
