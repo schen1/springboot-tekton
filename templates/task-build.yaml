@@ -25,7 +25,7 @@ spec:
 {{- end }}
     - name: BUILDER_IMAGE
       description: The location of the buildah builder image.
-      default: quay.io/buildah/stable:v1.11.0
+      default: quay.io/buildah/stable:v1.14.3
     - name: DOCKERFILE
       description: Path to the Dockerfile to build.
       default: ./Dockerfile
@@ -34,7 +34,7 @@ spec:
       default: .
     - name: TLSVERIFY
       description: Verify the TLS on the registry endpoint (for push/pull to a non-TLS registry)
-      default: "false"
+      default: "true"
     - name: FORMAT
       description: The format of the built container, oci or docker
       default: "oci"
@@ -85,13 +85,8 @@ spec:
     command: ["cp"]
     args:
       - /workspace/source/target/shift-rest-1.0.0-SNAPSHOT.jar
-      - /workspace/source/upload 
-  - name: copy-assets-2
-    image: quay.io/openshift-pipeline/openshift-cli:latest
-    command: ["cp"]
-    args:
       - /workspace/source/Dockerfile
-      - /workspace/source/upload 
+      - /workspace/source/upload
   - name: build-image
     image: $(inputs.params.BUILDER_IMAGE)
     workingDir: /workspace/source/upload
@@ -100,6 +95,7 @@ spec:
       - bud
       - --format=$(inputs.params.FORMAT)
       - --tls-verify=$(inputs.params.TLSVERIFY)
+      - --cert-dir=/run/secrets/kubernetes.io/serviceaccount/
       - --layers
       - -f
       - "$(inputs.params.DOCKERFILE)"
@@ -118,6 +114,7 @@ spec:
     args:
       - push
       - "--tls-verify=$(inputs.params.TLSVERIFY)"
+      - "--cert-dir=/run/secrets/kubernetes.io/serviceaccount/"
       - "$(outputs.resources.image.url)"
       - "docker://$(outputs.resources.image.url)"
     volumeMounts:
