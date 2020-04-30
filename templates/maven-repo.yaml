@@ -2,7 +2,7 @@
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: maven-repo-pvc-2
+  name: maven-repo-pvc
 spec:
   accessModes:
     - ReadWriteOnce

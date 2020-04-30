@@ -19,5 +19,5 @@ spec:
   workspaces:
   - name: local-maven-repo
     persistentVolumeClaim:
-      claimName: maven-repo-pvc-2
+      claimName: maven-repo-pvc
   timeout: 1h0m0s
