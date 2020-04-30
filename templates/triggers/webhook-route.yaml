@@ -6,7 +6,6 @@ metadata:
     app.kubernetes.io/part-of: Triggers
     eventlistener: {{ include "springboot-tekton.fullname" . }}-el
   name: webhook-listener
-  # namespace: {{ include "springboot-tekton.fullname" . }}-cicd
 spec:
   port:
     targetPort: http-listener
