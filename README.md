@@ -1,5 +1,9 @@
 # springboot-tekton
 
+## Prerequisites
+Tekton or OpenShift pipelines installed
+[Helm](https://helm.sh/)
+[Tekton CLI](https://github.com/tektoncd/cli) (Optional)
 
 ## Setup projects and rolebindings
 ```
@@ -32,16 +36,14 @@ Add PVC for [maven caching](https://developers.redhat.com/blog/2020/02/26/speed-
 
 ## Cleanup
 ```
-$ oc delete project basic-spring-boot-build basic-spring-boot-dev basic-spring-boot-prod basic-spring-boot-stage
+$ oc delete project basic-spring-boot-build \
+basic-spring-boot-dev \
+basic-spring-boot-stage \
+basic-spring-boot-prod
 ```
 
 ## References
-https://github.com/redhat-cop/container-pipelines/tree/master/basic-spring-boot-tekton
-
-https://developers.redhat.com/blog/2020/02/26/speed-up-maven-builds-in-tekton-pipelines/
-
-https://github.com/tektoncd/catalog
-
-https://docs.google.com/presentation/d/1nIrbVlVbk-cxWR7njrqkSahqK_wXKNnEGPXP2eKRrVk/edit#slide=id.g432884ce64_4_1420
-
-https://github.com/tektoncd/cli/blob/master/docs/reference/cmd/pipeline_start.md
+[Container pipelines from Red Hat CoP](https://github.com/redhat-cop/container-pipelines/tree/master/basic-spring-boot-tekton)
+[Maven caching](https://developers.redhat.com/blog/2020/02/26/speed-up-maven-builds-in-tekton-pipelines/)
+[Tekton catalog](https://github.com/tektoncd/catalog)
+[Pipeline start command](https://github.com/tektoncd/cli/blob/master/docs/reference/cmd/pipeline_start.md)
