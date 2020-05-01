@@ -44,6 +44,9 @@ basic-spring-boot-prod
 
 ## References
 [Container pipelines from Red Hat CoP](https://github.com/redhat-cop/container-pipelines/tree/master/basic-spring-boot-tekton)
+
 [Maven caching](https://developers.redhat.com/blog/2020/02/26/speed-up-maven-builds-in-tekton-pipelines/)
+
 [Tekton catalog](https://github.com/tektoncd/catalog)
+
 [Pipeline start command](https://github.com/tektoncd/cli/blob/master/docs/reference/cmd/pipeline_start.md)
