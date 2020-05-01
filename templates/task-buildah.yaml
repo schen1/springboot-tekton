@@ -42,6 +42,10 @@ spec:
     - -Dmaven.repo.local=$(workspaces.maven-repo.path)
     - -DskipTests
     - package
+    resources:
+      limits:
+        cpu: 1
+        memory: 2Gi
 
   - name: make-upload-dir
     image: quay.io/openshift-pipeline/openshift-cli:latest
@@ -49,6 +53,10 @@ spec:
     args:
       - -p
       - /workspace/source/upload
+    resources:
+      limits:
+        cpu: 0.2
+        memory: 200Mi
 
   - name: copy-assets
     image: quay.io/openshift-pipeline/openshift-cli:latest
@@ -57,6 +65,10 @@ spec:
       - /workspace/source/target/shift-rest-1.0.0-SNAPSHOT.jar
       - /workspace/source/Dockerfile
       - /workspace/source/upload
+    resources:
+      limits:
+        cpu: 0.2
+        memory: 200Mi
 
   - name: build-image
     image: $(inputs.params.BUILDER_IMAGE)
@@ -73,6 +85,10 @@ spec:
       - -t
       - "$(outputs.resources.image.url)"
       - "$(inputs.params.CONTEXT)"
+    resources:
+      limits:
+        cpu: 1
+        memory: 2Gi
     volumeMounts:
     - name: varlibcontainers
       mountPath: /var/lib/containers
@@ -89,6 +105,10 @@ spec:
       - "--cert-dir=/run/secrets/kubernetes.io/serviceaccount/"
       - "$(outputs.resources.image.url)"
       - "docker://$(outputs.resources.image.url)"
+    resources:
+      limits:
+        cpu: 1
+        memory: 2Gi
     volumeMounts:
     - name: varlibcontainers
       mountPath: /var/lib/containers
