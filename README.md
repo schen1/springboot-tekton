@@ -46,6 +46,7 @@ Add PVC for [maven caching](https://developers.redhat.com/blog/2020/02/26/speed-
 
 ## Cleanup
 ```
+$ helm delete springboot-pipelines -n basic-spring-boot-build
 $ oc delete project basic-spring-boot-build \
 basic-spring-boot-dev \
 basic-spring-boot-stage \
