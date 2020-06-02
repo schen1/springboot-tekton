@@ -12,7 +12,7 @@ spec:
   - name: git-repo-name
     description: The name of the deployment to be created / patched
   resourcetemplates:
-  - apiVersion: tekton.dev/v1alpha1
+  - apiVersion: tekton.dev/v1beta1
     kind: PipelineRun
     metadata:
       name: $(params.git-repo-name)-pipe-run-$(uid)

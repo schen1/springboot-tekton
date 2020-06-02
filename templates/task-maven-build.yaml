@@ -1,19 +1,18 @@
-apiVersion: tekton.dev/v1alpha1
+apiVersion: tekton.dev/v1beta1
 kind: Task
 metadata:
   labels:
 {{ include "springboot-tekton.labels" . | nindent 4 }}
   name: maven-build
 spec:
-  workspaces:
-  - name: maven-repo
-  inputs:
-    params:
-    - name: GOALS
-      description: The Maven goals to run
-      type: array
-      default: ["package"]
-    resources:
+
+  params:
+  - name: GOALS
+    description: The Maven goals to run
+    type: array
+    default: ["package"]
+  resources:
+    inputs:
     - name: source
       type: git
   steps: 
@@ -25,8 +24,11 @@ spec:
     - /usr/bin/mvn
     args:
     - -Dmaven.repo.local=$(workspaces.maven-repo.path)
-    - "$(inputs.params.GOALS)"
+    - "$(params.GOALS)"
     resources:
       limits:
         cpu: 1
         memory: 2Gi
+
+  workspaces:
+  - name: maven-repo

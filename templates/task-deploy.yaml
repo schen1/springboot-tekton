@@ -1,23 +1,23 @@
-apiVersion: tekton.dev/v1alpha1
+apiVersion: tekton.dev/v1beta1
 kind: Task
 metadata:
   labels:
 {{ include "springboot-tekton.labels" . | nindent 4 }}
   name: deploy
 spec:
-  inputs:
-    params:
-      - name: fromNamespace
-        description: The namespace we are tagging from
-      - name: toNamespace
-        description: The namespace we are tagging to
-      - name: tag
-        description: The image tag
-      - name: imageStream
-        description: The imageStream
-      - name: deployment
-        description: the deployment
-    resources:
+  params:
+    - name: fromNamespace
+      description: The namespace we are tagging from
+    - name: toNamespace
+      description: The namespace we are tagging to
+    - name: tag
+      description: The image tag
+    - name: imageStream
+      description: The imageStream
+    - name: deployment
+      description: the deployment
+  resources:
+    inputs:
     - name: templates
       type: git
   steps:
@@ -27,11 +27,11 @@ spec:
       workingDir: /workspace/templates/basic-spring-boot-tekton
       script: |
         #!/usr/bin/env bash
-        echo "Updating namespace $(inputs.params.toNamespace)"
+        echo "Updating namespace $(params.toNamespace)"
         oc process \
           -f .openshift/templates/deployment.yml \
-          -p "APPLICATION_NAME=$(inputs.params.imageStream)" \
-          -p "NAMESPACE=$(inputs.params.toNamespace)" \
+          -p "APPLICATION_NAME=$(params.imageStream)" \
+          -p "NAMESPACE=$(params.toNamespace)" \
           -p READINESS_PATH="/health" \
           -p READINESS_RESPONSE="status.:.UP" \
           | oc apply -f -
@@ -45,8 +45,8 @@ spec:
       command: ["/usr/local/bin/oc"]
       args:
         - tag
-        - "$(inputs.params.fromNamespace)/$(inputs.params.imageStream):$(inputs.params.tag)"
-        - "$(inputs.params.toNamespace)/$(inputs.params.imageStream):$(inputs.params.tag)"
+        - "$(params.fromNamespace)/$(params.imageStream):$(params.tag)"
+        - "$(params.toNamespace)/$(params.imageStream):$(params.tag)"
       resources:
         limits:
           cpu: 0.25
@@ -58,9 +58,9 @@ spec:
       args:
         - rollout
         - status
-        - "dc/$(inputs.params.deployment)"
+        - "dc/$(params.deployment)"
         - -n
-        - "$(inputs.params.toNamespace)"
+        - "$(params.toNamespace)"
       resources:
         limits:
           cpu: 0.25

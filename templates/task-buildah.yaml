@@ -1,34 +1,32 @@
-apiVersion: tekton.dev/v1alpha1
+apiVersion: tekton.dev/v1beta1
 kind: Task
 metadata:
   labels:
 {{ include "springboot-tekton.labels" . | nindent 4 }}
   name: buildah
 spec:
-  workspaces:
-  - name: maven-repo
-  inputs:
-    params:
-    - name: BUILDER_IMAGE
-      description: The location of the buildah builder image.
-      default: quay.io/buildah/stable:v1.14.3
-    - name: DOCKERFILE
-      description: Path to the Dockerfile to build.
-      default: ./Dockerfile
-    - name: CONTEXT
-      description: Path to the directory to use as context.
-      default: .
-    - name: TLSVERIFY
-      description: Verify the TLS on the registry endpoint (for push/pull to a non-TLS registry)
-      default: "true"
-    - name: FORMAT
-      description: The format of the built container, oci or docker
-      default: "oci"
-    resources:
+
+  params:
+  - name: BUILDER_IMAGE
+    description: The location of the buildah builder image.
+    default: quay.io/buildah/stable:v1.14.3
+  - name: DOCKERFILE
+    description: Path to the Dockerfile to build.
+    default: ./Dockerfile
+  - name: CONTEXT
+    description: Path to the directory to use as context.
+    default: .
+  - name: TLSVERIFY
+    description: Verify the TLS on the registry endpoint (for push/pull to a non-TLS registry)
+    default: "true"
+  - name: FORMAT
+    description: The format of the built container, oci or docker
+    default: "oci"
+  resources:
+    inputs:
     - name: source
       type: git
-  outputs:
-    resources:
+    outputs:
     - name: image
       type: image
   steps:   
@@ -71,20 +69,20 @@ spec:
         memory: 200Mi
 
   - name: build-image
-    image: $(inputs.params.BUILDER_IMAGE)
+    image: $(params.BUILDER_IMAGE)
     workingDir: /workspace/source/upload
     command: ['buildah']
     args:
       - bud
-      - --format=$(inputs.params.FORMAT)
-      - --tls-verify=$(inputs.params.TLSVERIFY)
+      - --format=$(params.FORMAT)
+      - --tls-verify=$(params.TLSVERIFY)
       - --cert-dir=/run/secrets/kubernetes.io/serviceaccount/
       - --layers
       - -f
-      - "$(inputs.params.DOCKERFILE)"
+      - "$(params.DOCKERFILE)"
       - -t
       - "$(outputs.resources.image.url)"
-      - "$(inputs.params.CONTEXT)"
+      - "$(params.CONTEXT)"
     resources:
       limits:
         cpu: 1
@@ -96,12 +94,12 @@ spec:
       privileged: true
 
   - name: push-image
-    image: $(inputs.params.BUILDER_IMAGE)
+    image: $(params.BUILDER_IMAGE)
     workingDir: /workspace/source
     command: ['buildah']
     args:
       - push
-      - "--tls-verify=$(inputs.params.TLSVERIFY)"
+      - "--tls-verify=$(params.TLSVERIFY)"
       - "--cert-dir=/run/secrets/kubernetes.io/serviceaccount/"
       - "$(outputs.resources.image.url)"
       - "docker://$(outputs.resources.image.url)"
@@ -119,3 +117,5 @@ spec:
   - name: varlibcontainers
     persistentVolumeClaim:
       claimName: container-layers
+  workspaces:
+  - name: maven-repo
