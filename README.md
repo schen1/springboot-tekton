@@ -33,12 +33,12 @@ $ tkn pipeline start basic-spring-boot-pipeline \
 
 ### Using Triggers
 
-You can add a GitHub webhook that will POST a JSON event your Webhook listener:
+You can add a GitHub webhook that will POST to a JSON event to your Webhook listener:
 ```
 $ echo "URL: $(oc  get route webhook-listener --template='https://{{.spec.host}}')"
 ```
 
-More information is available in the references.
+Additional information is available in the references.
 
 ## Support
 Add PVC for [maven caching](https://developers.redhat.com/blog/2020/02/26/speed-up-maven-builds-in-tekton-pipelines/)
