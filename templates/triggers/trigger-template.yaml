@@ -4,8 +4,8 @@ metadata:
   name: {{ include "springboot-tekton.fullname" . }}-tt
 spec:
   params:
-  - name: git-repo-url
-    description: The git repository url
+  - name: git-pusher
+    description: The git repository pusher name
   - name: git-revision
     description: The git revision
     default: master
@@ -19,6 +19,7 @@ spec:
       labels:
         git-revision: $(params.git-revision)
         git-repository: $(params.git-repo-name)
+        git-pusher: $(params.git-pusher)
     spec:
       pipelineRef:
         name: {{ include "springboot-tekton.fullname" . }}-pipeline
