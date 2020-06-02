@@ -15,11 +15,11 @@ spec:
   - apiVersion: tekton.dev/v1alpha1
     kind: PipelineRun
     metadata:
-      name: $(params.git-repo-name)-$(params.git-repo-revision)-pipe-run-$(uid)
+      name: $(params.git-repo-name)-pipe-run-$(uid)
       labels:
-        branch: $(params.git-repo-revision)
-        repository: $(params.git-repo-name)
-        revision: $(params.git-repo-revision)
+        git-revision: $(params.git-revision)
+        git-repository: $(params.git-repo-name)
+        git-url: $(params.git-repo-url)
     spec:
       pipelineRef:
         name: {{ include "springboot-tekton.fullname" . }}-pipeline
