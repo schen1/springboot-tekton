@@ -19,7 +19,6 @@ spec:
       labels:
         git-revision: $(params.git-revision)
         git-repository: $(params.git-repo-name)
-        git-url: $(params.git-repo-url)
     spec:
       pipelineRef:
         name: {{ include "springboot-tekton.fullname" . }}-pipeline
