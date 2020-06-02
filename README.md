@@ -28,14 +28,15 @@ $ tkn pipeline start basic-spring-boot-pipeline \
     --resource basic-spring-boot-git=basic-spring-boot-git \
     --resource basic-spring-boot-templates=basic-spring-boot-templates \
     --resource basic-spring-boot-image=basic-spring-boot-image \
-    --workspace name=local-maven-repo,claimName=maven-repo-pvc
+    --workspace name=local-maven-repo,claimName=maven-repo-pvc \
+    -n basic-spring-boot-build
 ```
 
 ### Using Triggers
 
 You can add a GitHub webhook that will POST to a JSON event to your Webhook listener:
 ```
-$ echo "URL: $(oc  get route webhook-listener --template='https://{{.spec.host}}')"
+$ echo "URL: $(oc  get route webhook-listener --template='https://{{.spec.host}}' -n basic-spring-boot-build)"
 ```
 
 Additional information is available in the references.
