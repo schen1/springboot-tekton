@@ -14,3 +14,5 @@ spec:
     name: el-{{ include "springboot-tekton.fullname" . }}-el
     weight: 100
   wildcardPolicy: None
+  tls:
+    termination: edge
