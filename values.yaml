@@ -17,7 +17,7 @@ serviceAccount:
   name: pipeline
 
 imagestream:
-  name: redhat-openjdk18-openshift:1.5
+  name: redhat-openjdk18-openshift:1.7
   namespace: openshift
 
 deploy:
