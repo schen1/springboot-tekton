@@ -31,7 +31,8 @@ spec:
   - name: quality-gate
     taskRef: 
       name: maven-quality
-    runAfter: ["maven-build"]
+    runAfter:
+      - maven-build
     resources:
       inputs:
       - name: source
@@ -47,7 +48,8 @@ spec:
   - name: build-image
     taskRef:
       name: buildah
-    runAfter: ["quality-gate"]
+    runAfter: 
+      - quality-gate
     resources:
       inputs:
       - name: source

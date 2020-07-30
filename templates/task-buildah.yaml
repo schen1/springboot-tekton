@@ -7,6 +7,7 @@ metadata:
 spec:
   workspaces:
   - name: maven-repo
+    readOnly: true
   inputs:
     params:
     - name: BUILDER_IMAGE
@@ -33,22 +34,8 @@ spec:
       type: image
   steps:   
 
-  - name: package
-    image: maven:3.6.0-jdk-8-slim
-    workingDir: /workspace/source
-    command:
-    - /usr/bin/mvn
-    args:
-    - -Dmaven.repo.local=$(workspaces.maven-repo.path)
-    - -DskipTests
-    - package
-    resources:
-      limits:
-        cpu: 1
-        memory: 2Gi
-
   - name: make-upload-dir
-    image: quay.io/openshift-pipeline/openshift-cli:latest
+    image: registry.redhat.io/ubi8/ubi-minimal:8.2
     command: ["mkdir"]
     args:
       - -p
@@ -59,10 +46,10 @@ spec:
         memory: 200Mi
 
   - name: copy-assets
-    image: quay.io/openshift-pipeline/openshift-cli:latest
+    image: registry.redhat.io/ubi8/ubi-minimal:8.2
     command: ["cp"]
     args:
-      - /workspace/source/target/shift-rest-1.0.0-SNAPSHOT.jar
+      - /workspace/maven-repo/shift-rest-target/shift-rest-1.0.0-SNAPSHOT.jar
       - /workspace/source/Dockerfile
       - /workspace/source/upload
     resources:

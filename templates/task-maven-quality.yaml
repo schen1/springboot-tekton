@@ -29,19 +29,19 @@ spec:
       type: git
   steps: 
 
-  - name: package
-    image: maven:3.6.0-jdk-8-slim
+  - name: copy-target-dir
+    image: registry.redhat.io/ubi8/ubi-minimal:8.2
     workingDir: /workspace/source
     command:
-    - /usr/bin/mvn
+    - cp
     args:
-    - -Dmaven.repo.local=$(workspaces.maven-repo.path)
-    - -DskipTests
-    - package
+    - -r
+    - /workspace/maven-repo/shift-rest-target
+    - /workspace/source/target
     resources:
       limits:
-        cpu: 0.5
-        memory: 1Gi
+        cpu: 0.2
+        memory: 256Mi
 
   - name: sonar-scan
     image: maven:3.6.0-jdk-8-slim

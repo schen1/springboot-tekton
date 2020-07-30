@@ -30,3 +30,17 @@ spec:
       limits:
         cpu: 1
         memory: 2Gi
+
+  - name: copy-target-dir
+    image: registry.redhat.io/ubi8/ubi-minimal:8.2
+    workingDir: /workspace/source
+    command:
+    - cp
+    args:
+    - -r
+    - ./target/
+    - /workspace/maven-repo/shift-rest-target
+    resources:
+      limits:
+        cpu: 0.2
+        memory: 256Mi
