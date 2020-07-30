@@ -7,6 +7,7 @@ metadata:
 spec:
   workspaces:
   - name: local-maven-repo
+  - name: sonar-script
   resources:
   - name: {{ include "springboot-tekton.fullname" . }}-git
     type: git
@@ -43,6 +44,8 @@ spec:
     workspaces:
     - name: maven-repo
       workspace: local-maven-repo
+    - name: sonar
+      workspace: sonar-script
 {{- end}}
 
   - name: build-image

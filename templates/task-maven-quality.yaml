@@ -7,20 +7,13 @@ metadata:
 spec:
   workspaces:
   - name: maven-repo
+  - name: sonar
   inputs:
     params:
     - name: GOALS
       description: The Maven goals to run
       type: array
       default: ["sonar:sonar"]
-    - name: VOLUMENAME
-      description: The sonar-script volume
-      type: string
-      default: sonar-volume
-    - name: CFGNAME
-      description: the sonar config map name containing the quality gate script
-      type: string
-      default: sonar
     - name: SONAR_HOST_URL
       description: the sonar host URL
       type: string
@@ -62,16 +55,8 @@ spec:
     command: ["bash"]
     workingDir: /workspace/source
     args:
-      - /var/sonar/sonar.sh
-    volumeMounts:
-    - name: "$(inputs.params.VOLUMENAME)"
-      mountPath: /var/sonar
+      - $(workspaces.sonar.path)/sonar.sh
     resources:
       limits:
         cpu: 0.25
         memory: 0.5Gi
-
-  volumes:
-  - name: "$(inputs.params.VOLUMENAME)"
-    configMap:
-      name: "$(inputs.params.CFGNAME)"
